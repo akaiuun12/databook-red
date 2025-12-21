@@ -1,21 +1,11 @@
 ﻿---
-layout: post
-category: SQL
-tags: ['sql']
-
+title: FULL OUTER JOIN을 사용한 회원 유입/이탈 분석
+description: FULL OUTER JOIN, MINUS, EXISTS를 사용한 회원 유입/이탈 분석 방법과 각 방법의 성능 비교.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
 date: 2024-07-30
 author: Akai Red
-title: FULL OUTER JOIN을 사용한 회원 유입/이탈 분석
-description: 
-    FULL OUTER JOIN, MINUS, EXISTS를 사용하고 성능을 비교해보자.
-
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220301_img1
-
-show_thumbnail: true
-math: true
+category: SQL
+tags: ['sql']
 published: false
 ---
 

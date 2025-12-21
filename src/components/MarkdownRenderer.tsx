@@ -25,7 +25,7 @@ const CopyButton: React.FC<{ code: string }> = ({ code }) => {
   return (
     <button 
       onClick={handleCopy}
-      className={`text-[10px] font-bold uppercase tracking-widest transition-all duration-200 ${
+      className={`text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
         copied 
         ? 'text-green-400' 
         : 'text-slate-500 hover:text-slate-300'
@@ -110,8 +110,8 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
 
     return (
       <div key={key} className="my-8 overflow-x-auto rounded-2xl border border-slate-200 dark:border-white/5 bg-slate-900/5 dark:bg-slate-900/10">
-        <table className="w-full text-left border-collapse text-sm">
-          <thead className="bg-red-500/5 text-red-500 font-black uppercase tracking-widest text-[11px]">
+        <table className="w-full text-left border-collapse text-xs sm:text-sm md:text-base">
+          <thead className="bg-red-500/5 text-red-500 font-black uppercase tracking-widest text-[10px] sm:text-[11px] md:text-xs">
             <tr>
               {headerRow.map((h, i) => (
                 <th key={i} className="px-6 py-4 border-b border-slate-200 dark:border-white/5">{renderLineContent(h)}</th>
@@ -194,12 +194,12 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
           const highlighted = Prism.highlight(code, grammar, codeLang);
           
           elements.push(
-            <div key={`code-block-${index}`} className="my-8 rounded-xl overflow-hidden bg-[#0d1117] border border-white/10 shadow-xl theme-transition group">
+            <div key={`code-block-${index}`} className="my-8 rounded-xl overflow-hidden bg-[#0d1117] border border-white/10 shadow-xl theme-transition group p-4">
               <div className="flex items-center justify-between px-5 py-2.5 bg-white/[0.03] border-b border-white/5">
-                <span className="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-widest">{codeLang}</span>
+                <span className="text-[9px] sm:text-[10px] md:text-xs font-bold font-mono text-slate-500 uppercase tracking-widest">{codeLang}</span>
                 <CopyButton code={code} />
               </div>
-              <pre className={`p-10 md:p-12 m-0 overflow-x-auto font-mono text-[13px] leading-relaxed language-${codeLang}`}>
+              <pre className={`pt-6 pr-6 pb-6 sm:pt-8 sm:pr-8 sm:pb-8 md:pt-10 md:pr-10 md:pb-10 lg:pt-12 lg:pr-12 lg:pb-12 pl-[3px] mt-0 mb-0 mr-0 ml-4 overflow-x-auto font-mono text-xs sm:text-sm md:text-[13px] lg:text-base leading-relaxed language-${codeLang}`}>
                 <code dangerouslySetInnerHTML={{ __html: highlighted }} />
               </pre>
             </div>
@@ -244,23 +244,23 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
       if (line.startsWith('# ')) {
         const titleText = line.slice(2);
         const isFirstElement = elements.length === 0;
-        elements.push(<h1 id={slugify(titleText)} key={key} className={`text-3xl font-black ${isFirstElement ? 'mt-4' : 'mt-8'} mb-2 tracking-tighter leading-tight text-current scroll-mt-24`}>{renderLineContent(titleText)}</h1>);
+        elements.push(<h1 id={slugify(titleText)} key={key} className={`text-2xl sm:text-3xl md:text-4xl font-black ${isFirstElement ? 'mt-4' : 'mt-8'} mb-2 tracking-tighter leading-tight text-current scroll-mt-24`}>{renderLineContent(titleText)}</h1>);
       } else if (line.startsWith('## ')) {
         const titleText = line.slice(3);
-        elements.push(<h2 id={slugify(titleText)} key={key} className="text-xl font-bold mt-6 mb-2 border-b border-red-500/10 pb-1 tracking-tight text-current scroll-mt-24">{renderLineContent(titleText)}</h2>);
+        elements.push(<h2 id={slugify(titleText)} key={key} className="text-lg sm:text-xl md:text-2xl font-bold mt-6 mb-2 border-b border-red-500/10 pb-1 tracking-tight text-current scroll-mt-24">{renderLineContent(titleText)}</h2>);
       } else if (line.startsWith('### ')) {
         const titleText = line.slice(4);
-        elements.push(<h3 id={slugify(titleText)} key={key} className="text-lg font-semibold mt-4 mb-1 text-current scroll-mt-24">{renderLineContent(titleText)}</h3>);
+        elements.push(<h3 id={slugify(titleText)} key={key} className="text-base sm:text-lg md:text-xl font-semibold mt-4 mb-1 text-current scroll-mt-24">{renderLineContent(titleText)}</h3>);
       } else if (line.startsWith('- ') || line.startsWith('* ')) {
-        elements.push(<li key={key} className="ml-8 mb-1 list-disc pl-3 leading-relaxed opacity-90 text-[15px]">{renderLineContent(line.slice(2))}</li>);
+        elements.push(<li key={key} className="ml-6 sm:ml-8 mb-1 list-disc pl-3 leading-relaxed opacity-90 text-sm sm:text-[15px] md:text-base">{renderLineContent(line.slice(2))}</li>);
       } else if (line.match(/^\d+\. /)) {
-        elements.push(<li key={key} className="ml-8 mb-1 list-decimal pl-3 leading-relaxed opacity-90 text-[15px]">{renderLineContent(line.replace(/^\d+\. /, ''))}</li>);
+        elements.push(<li key={key} className="ml-6 sm:ml-8 mb-1 list-decimal pl-3 leading-relaxed opacity-90 text-sm sm:text-[15px] md:text-base">{renderLineContent(line.replace(/^\d+\. /, ''))}</li>);
       } else if (line.startsWith('> ')) {
-        elements.push(<blockquote key={key} className="border-l-4 border-red-600 bg-red-600/5 dark:bg-red-600/10 px-6 py-3 my-4 italic rounded-r-3xl opacity-80 text-base">{renderLineContent(line.slice(2))}</blockquote>);
+        elements.push(<blockquote key={key} className="border-l-4 border-red-600 bg-red-600/5 dark:bg-red-600/10 px-4 sm:px-6 py-3 my-4 italic rounded-r-3xl opacity-80 text-sm sm:text-base md:text-lg">{renderLineContent(line.slice(2))}</blockquote>);
       } else if (trimmedLine === '') {
         elements.push(<div key={key} className="h-1" />);
       } else {
-        elements.push(<p key={key} className="mb-1 leading-relaxed text-[15px] font-medium opacity-90">{renderLineContent(line)}</p>);
+        elements.push(<p key={key} className="mb-1 leading-relaxed text-sm sm:text-[15px] md:text-base font-medium opacity-90">{renderLineContent(line)}</p>);
       }
     });
 

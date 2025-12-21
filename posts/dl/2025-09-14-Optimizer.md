@@ -1,18 +1,11 @@
 ﻿---
-layout: post
+title: Advanced Optimizers
+description: 경사하강법보다 훈련 속도를 높일 수 있는 고급 옵티마이저. Momentum, SGD, Adam의 원리와 비교.
+image: 
+date: 2025-09-14
+author: Akai Red
 category: DL
 tags: ['deep learning']
-date: 2025-09-14
-
-title: Advanced Optimizers
-author: Akai Red
-description:
-    경사하강법보다 훈련 속도를 높일 수 있는 Momentum, SGD, 그리고 Adam 옵티마이저를 확인해보자 
-image: 
-optimized_image: 
-
-show_thumbnail: true
-math: true
 published: false
 ---
 

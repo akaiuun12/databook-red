@@ -1,20 +1,11 @@
 ﻿---
-layout: post
+title: 파이썬을 사용한 자동화 (os, sys, shutil)
+description: 파이썬 기반 자동화 작업을 위한 os, sys, shutil 패키지 사용법. 파일 및 디렉토리 조작 방법.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220211_img1
+date: 2021-03-30
+author: Akai Red
 category: Python
 tags: ['python']
-date: 2021-03-30
-
-title: 파이썬을 사용한 자동화 (os, sys, shutil)
-author: Akai Red
-description:
-    os, sys, shutil 등은 파이썬 기반 자동화 작업 시 중요한 패키지다.
-image:
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220211_img1
-optimized_image:
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220211_img1
-
-show_thumbnail: true
-math: true
 published: true
 ---
 

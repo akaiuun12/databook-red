@@ -1,18 +1,11 @@
 ﻿---
-layout: post
+title: GGML C4W2 - Deep Convolutional Models Case Studies
+description: LeNet-5, AlexNet, ResNet 등 유명한 CNN 모델의 구조와 특징. 컴퓨터 비전 분야에서의 발전 과정.
+image: 
+date: 2025-09-18
+author: Akai Red
 category: DL
 tags: ['deep learning']
-date: 2025-09-18
-
-title: GGML C4W2 - Deep Convolutional Models Case Studies
-author: Akai Red
-description:
-    LeNet-5, AlexNet, ResNet 등 유명한 CNN 모델을 알아보자.
-image: 
-optimized_image: 
-
-show_thumbnail: true
-math: true
 published: true
 ---
 

@@ -1,25 +1,13 @@
 ﻿---
-layout: post
-category: Python
-tags: ['data structure']
+title: Hash Function and Hash Table
+description: 해시 함수와 해시 테이블의 원리. 파이썬 딕셔너리 구현과 충돌 해결 방법.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20240129_img1
 date: 2024-01-29
 author: Akai Red
-title: Hash Function and Hash Table
-description:
-    해시 테이블은 해시 함수를 사용해 데이터를 저장하고 조회한다.
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20240129_img1
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20240129_img1
-show_thumbnail: true
-math: true
+category: Python
+tags: ['data structure']
 published: true
 ---
-
-<!-- 
-## Hash Function
-
-## Hash Table -->
 
 ## Hash Table in Python: Dictionary
 ```python

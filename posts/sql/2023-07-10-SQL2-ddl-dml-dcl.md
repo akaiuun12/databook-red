@@ -1,21 +1,11 @@
 ﻿---
-layout: post
-category: SQL
-tags: ['sql']
-
+title: SQL 101 - DDL, DML, DCL 기초
+description: DDL은 데이터를 생성, 삭제, 수정한다. DML을 사용하면 데이터를 조회, 삽입, 삭제, 갱신할 수 있다.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
 date: 2023-07-10
 author: Akai Red
-title: SQL 101 - DDL, DML, DCL 기초
-description: 
-    DDL은 데이터를 생성, 삭제, 수정한다. DML을 사용하면 데이터를 조회, 삽입, 삭제, 갱신할 수 있다.
-
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220301_img1
-
-show_thumbnail: true
-math: true
+category: SQL
+tags: ['sql']
 published: true
 ---
 

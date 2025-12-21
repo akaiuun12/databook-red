@@ -1,21 +1,11 @@
 ﻿---
-layout: post
-category: SQL
-tags: ['sql']
-
+title: SQL 201 - 가독성을 위한 개인적인 SQL 스타일 가이드
+description: 가독성 좋은 쿼리를 작성하기 위한 개인적인 SQL 스타일 가이드. 들여쓰기, 줄바꿈, 명명 규칙 등.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
 date: 2024-06-28
 author: Akai Red
-title: SQL 201 - 가독성을 위한 개인적인 SQL 스타일 가이드
-description: 
-  가독성 좋은 쿼리를 짜고 싶어 몇몇 가이드라인을 참조하며 정립한 내 스타일의 SQL 가이드를 정리해본다.
-
-image: 
-  https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
-optimized_image: 
-  https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220301_img1
-
-show_thumbnail: true
-math: true
+category: SQL
+tags: ['sql']
 published: true
 ---
 

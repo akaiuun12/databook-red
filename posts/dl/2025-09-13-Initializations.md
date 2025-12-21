@@ -1,18 +1,11 @@
 ﻿---
-layout: post
+title: Vanishing and Exploding Gradients
+description: 심층 신경망의 그래디언트 소실/폭주 문제와 해결책. 가중치 초기화 방법과 활성화 함수 선택의 중요성.
+image: 
+date: 2025-09-13
+author: Akai Red
 category: DL
 tags: ['deep learning']
-date: 2025-09-13
-
-title: Vanishing and Exploding Gradients
-author: Akai Red
-description:
-    심층 신경망에서는 그래디언트(기울기)를 사용해서 가중치를 업데이트하고 모델을 학습시킨다. 모델 학습을 방해하는 그래디언트 소실/폭주 문제를 알아보고 주요 해결책을 확인한다.
-image: 
-optimized_image: 
-
-show_thumbnail: true
-math: true
 published: true
 ---
 

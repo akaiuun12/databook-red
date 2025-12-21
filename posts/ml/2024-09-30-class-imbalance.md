@@ -1,21 +1,11 @@
 ﻿---
-layout: post
+title: Class Imbalance Problem
+description: 클래스 불균형 문제 해결을 위한 오버샘플링 기법. Random Oversampling, SMOTE, Undersampling 방법과 비교.
+image: /imgs/2024-09-30-class-imbalance-diagram-05.png
+date: 2024-09-30
+author: Akai Red
 category: ML
 tags: ['data science']
-date: 2024-09-30
-
-author: Akai Red
-title: Class Imbalance Problem
-description:
-    오버샘플링 기법을 사용해 클래스 불균형 문제를 해결한다.
-
-show_thumbnail: true
-image: 
-    /imgs/2024-09-30-class-imbalance-diagram-05.png
-optimized_image: 
-    /imgs/2024-09-30-class-imbalance-diagram-05.png
-                    
-math: true
 published: true
 ---
 

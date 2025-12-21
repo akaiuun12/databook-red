@@ -1,18 +1,11 @@
 ﻿---
-layout: post
-category: Python
-tags: ['data structure']
+title: Stack and Queue
+description: 스택(LIFO)과 큐(FIFO) 자료구조의 개념과 파이썬 구현 방법. collections 모듈 활용.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20240131_img1.jpg
 date: 2024-01-22
 author: Akai Red
-title: Stack and Queue
-description:
-    스택은 LIFO 방식으로, 큐는 FIFO 방식으로 데이터를 처리한다.
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20240131_img1.jpg
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20240131_img1.jpg
-show_thumbnail: true
-math: true
+category: Python
+tags: ['data structure']
 published: true
 ---
 

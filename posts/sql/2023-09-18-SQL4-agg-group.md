@@ -1,21 +1,11 @@
 ﻿---
-layout: post
-category: SQL
-tags: ['sql']
-
+title: SQL 101 - Aggregate Function & Group By
+description: 데이터의 개수, 합계, 최대값, 최소값을 구하는 집계 함수와 GROUP BY 절 사용법.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
 date: 2023-09-18
 author: Akai Red
-title: SQL 101 - Aggregate Function & Group By
-description: 
-    데이터의 개수, 합계, 최대값, 최소값을 구하는 간단한 함수들이 SQL에 마련되어 있다.
-
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220301_img1
-
-show_thumbnail: true
-math: true
+category: SQL
+tags: ['sql']
 published: true
 ---
 

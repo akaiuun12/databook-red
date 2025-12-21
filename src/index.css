@@ -125,12 +125,24 @@
   /* Inline Code */
   .inline-code {
     font-family: var(--font-family-mono);
-    font-size: 0.85em;
+    font-size: 0.875em; /* 14px base, scales with parent */
     background: hsl(var(--code-inline-bg));
     color: hsl(var(--code-inline-color));
     padding: 0.15rem 0.35rem;
     border-radius: 0.3rem;
     border: 1px solid hsl(var(--code-inline-border));
+  }
+  
+  @media (min-width: 640px) {
+    .inline-code {
+      font-size: 0.9em; /* Slightly larger on tablet */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .inline-code {
+      font-size: 0.85em; /* Original size on laptop */
+    }
   }
   
   /* Markdown Content */
@@ -139,13 +151,37 @@
   }
   
   .markdown-content p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Mobile spacing */
     line-height: 1.75;
+  }
+  
+  @media (min-width: 640px) {
+    .markdown-content p {
+      margin-bottom: 1.25rem; /* Tablet spacing */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .markdown-content p {
+      margin-bottom: 1.5rem; /* Laptop spacing */
+    }
   }
   
   /* KaTeX Math Rendering */
   .katex {
-    font-size: 1.1em;
+    font-size: 1em; /* Base size for mobile */
+  }
+  
+  @media (min-width: 640px) {
+    .katex {
+      font-size: 1.05em; /* Slightly larger on tablet */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .katex {
+      font-size: 1.1em; /* Original size on laptop */
+    }
   }
   
   /* Prism.js Syntax Highlighting */
@@ -234,5 +270,10 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  /* Nav font-size override */
+  nav.flex.items-center {
+    font-size: 18px;
   }
 }

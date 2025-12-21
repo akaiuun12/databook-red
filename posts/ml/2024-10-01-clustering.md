@@ -1,21 +1,11 @@
 ﻿---
-layout: post
+title: Clustering Analysis
+description: 비지도 학습 기법인 군집분석. k-Mean, DBSCAN, 계층적 군집분석과 엘보우 방법, 실루엣 계수 등 평가 지표.
+image: 
+date: 2024-10-01
+author: Akai Red
 category: ML
 tags: ['data science']
-date: 2024-10-01
-
-author: Akai Red
-title: Clustering Analysis
-description:
-    대표적인 비지도 학습인 군집분석에 대해 알아보자.
-
-show_thumbnail: true
-image: 
-    # /imgs/2024-09-30-class-imbalance-diagram-05.png
-optimized_image: 
-    # /imgs/2024-09-30-class-imbalance-diagram-05.png
-                    
-math: true
 published: true
 ---
 

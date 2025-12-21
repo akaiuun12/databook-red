@@ -1,21 +1,11 @@
 ﻿---
-layout: post
-category: SQL
-tags: ['sql']
-
+title: SQL 101 - SELECT, WHERE와 연산자
+description: 특정 조건을 만족하는 결과만을 출력하기 위한 SELECT, WHERE절과 연산자 사용법. 산술, 비교, 논리 연산자 포함.
+image: https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
 date: 2023-07-17
 author: Akai Red
-title: SQL 101 - SELECT, WHERE와 연산자
-description: 
-    특정 조건을 만족하는 결과만을 출력하고 싶을 때 SELECT, WHERE절과 연산자를 사용할 수 있다.
-
-image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_760,h_399,r_5,f_auto,q_auto/lrc/20220301_img1
-optimized_image: 
-    https://res.cloudinary.com/dhchweuhy/image/upload/c_fill,w_380,h_200,r_5,f_auto,q_auto/lrc/20220301_img1
-
-show_thumbnail: true
-math: true
+category: SQL
+tags: ['sql']
 published: true
 ---
 
