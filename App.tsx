@@ -3,13 +3,18 @@ import React, { useState, useMemo, useRef, useEffect, useCallback, memo } from '
 import { Post, ViewState } from './types';
 import MarkdownRenderer from './MarkdownRenderer';
 
+const stripFrontmatter = (text: string) => {
+  const regex = /^\uFEFF?(?:\s*\r?\n)*---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*(?:[\r\n]+|$)/;
+  const match = text.match(regex);
+  if (!match) return { frontmatter: '', body: text.trim() };
+  return { frontmatter: match[1], body: text.slice(match[0].length).trim() };
+};
+
 const parseFrontmatter = (content: string) => {
-  const regex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*/;
-  const match = content.match(regex);
+  const { frontmatter, body } = stripFrontmatter(content);
   
-  if (match) {
-    const yaml = match[1];
-    const body = content.slice(match[0].length).trim();
+  if (frontmatter) {
+    const yaml = frontmatter;
     const metadata: any = {};
     const lines = yaml.split(/\r?\n/);
     
@@ -29,7 +34,7 @@ const parseFrontmatter = (content: string) => {
           // Collect all following indented lines until we hit a new key or empty line
           while (i < lines.length) {
             const nextLine = lines[i];
-            // Stop if we hit an empty line or a new key (colon without leading whitespace)
+            // Stop if we hit an empty line
             if (nextLine.trim() === '') {
               break;
             }
@@ -46,8 +51,9 @@ const parseFrontmatter = (content: string) => {
             // Collect this line (remove leading whitespace)
             if (nextLine.match(/^\s+/)) {
               multiLineValue.push(nextLine.replace(/^\s+/, ''));
-            } else if (nextLine.trim() !== '') {
-              multiLineValue.push(nextLine);
+            } else {
+              // Not indented => treat as new key/value; stop.
+              break;
             }
             i++;
           }
@@ -131,7 +137,8 @@ const App: React.FC = () => {
             if (metadata.published === false) return null;
             
             const h1Match = body.match(/^#\s+(.*)/m);
-            const postTitle = metadata.title || (h1Match ? h1Match[1] : null) || 'Untitled Post';
+            const cleanTitle = metadata.title ? String(metadata.title).trim() : '';
+            const postTitle = cleanTitle || (h1Match ? h1Match[1].trim() : '') || 'Untitled Post';
             const fileName = path.split('/').pop() || 'file.md';
             
             // Extract category from folder path: posts/category/file.md -> category
@@ -145,11 +152,19 @@ const App: React.FC = () => {
 
             const finalTags = Array.isArray(metadata.tags) ? metadata.tags.map(String) : (metadata.tags ? [String(metadata.tags)] : []);
 
+            const cleanDescription = metadata.description ? String(metadata.description).trim() : '';
+            const fallbackExcerpt = stripFrontmatter(body).body
+              .slice(0, 180)
+              .replace(/[#*`]/g, '')
+              .replace(/\s+/g, ' ')
+              .trim();
+            const excerpt = (cleanDescription || fallbackExcerpt) + (cleanDescription || fallbackExcerpt ? '...' : '');
+
             return {
               id: Math.random().toString(36).substr(2, 9),
               title: postTitle,
-              slug: (metadata.title || fileName).toLowerCase().replace(/\s+/g, '-'),
-              excerpt: metadata.description || body.slice(0, 150).replace(/[#*`]/g, '').trim() + '...',
+              slug: (cleanTitle || fileName).toLowerCase().replace(/\s+/g, '-'),
+              excerpt,
               content: text, // Keep full text with frontmatter for MarkdownRenderer (it strips frontmatter itself)
               publishedAt: String(metadata.date || '2024-01-01'),
               tags: finalTags,
