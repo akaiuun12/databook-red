@@ -119,9 +119,17 @@ const App: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isTocCollapsed, setIsTocCollapsed] = useState(false);
   
   const mainContentRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  
+  // Reset TOC to open when post changes
+  useEffect(() => {
+    if (currentPost) {
+      setIsTocCollapsed(false);
+    }
+  }, [currentPost?.id]);
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -399,59 +407,78 @@ const App: React.FC = () => {
                 </div>
               </div>
               
-              <div className="max-w-6xl mx-auto px-6 md:px-10 pb-32 pt-12 md:pt-16 flex flex-col lg:flex-row gap-6">
+              <div className="max-w-6xl mx-auto px-6 md:px-10 pb-32 pt-12 md:pt-16">
                 <div className="flex-grow">
-                  <div className={`${isDarkMode ? 'bg-slate-900/40' : 'bg-white'} backdrop-blur-md p-6 md:p-10 rounded-2xl border ${borderColor} shadow-2xl relative -mt-16 sm:-mt-24`}>
-                    <MarkdownRenderer content={currentPost.content} />
-                  </div>
+                  {(() => {
+                    const toc = extractToc(currentPost.content);
+                    const hasToc = toc.length > 0;
+                    
+                    return (
+                      <>
+                        {hasToc && (
+                          <div className={`${isDarkMode ? 'bg-slate-900/40' : 'bg-white'} backdrop-blur-md rounded-2xl border ${borderColor} shadow-xl mb-10 relative -mt-16 sm:-mt-24`}>
+                            <div className="flex items-center justify-between p-4 border-b border-red-500/10">
+                              <h4 className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-red-600">Table of Contents</h4>
+                              <button
+                                onClick={() => setIsTocCollapsed(!isTocCollapsed)}
+                                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                aria-label={isTocCollapsed ? 'Expand' : 'Collapse'}
+                              >
+                                <svg 
+                                  className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform duration-200 ${isTocCollapsed ? '' : 'rotate-180'}`} 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </button>
+                            </div>
+                            <div className={`overflow-hidden transition-all duration-300 ${isTocCollapsed ? 'max-h-0' : ''}`}>
+                              <nav className="p-4 pb-6 space-y-2 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                                {toc.map((item) => (
+                                  <a
+                                    key={item.id}
+                                    href={`#${item.id}`}
+                                    className={`block text-xs sm:text-sm md:text-base hover:text-red-600 transition-colors ${
+                                      item.level === 1 
+                                        ? 'font-bold text-sm sm:text-base md:text-lg' 
+                                        : item.level === 2 
+                                        ? 'font-semibold ml-0' 
+                                        : item.level === 3
+                                        ? 'ml-4 text-slate-600 dark:text-slate-400'
+                                        : item.level === 4
+                                        ? 'ml-8 text-slate-500 dark:text-slate-500 text-xs'
+                                        : item.level === 5
+                                        ? 'ml-12 text-slate-500 dark:text-slate-500 text-xs'
+                                        : 'ml-16 text-slate-500 dark:text-slate-500 text-xs'
+                                    }`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      const element = document.getElementById(item.id);
+                                      if (element) {
+                                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                      }
+                                    }}
+                                  >
+                                    {item.text}
+                                  </a>
+                                ))}
+                              </nav>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className={`${isDarkMode ? 'bg-slate-900/40' : 'bg-white'} backdrop-blur-md p-6 md:p-10 rounded-2xl border ${borderColor} shadow-2xl relative ${hasToc ? '' : '-mt-16 sm:-mt-24'}`}>
+                          <MarkdownRenderer content={currentPost.content} />
+                        </div>
+                      </>
+                    );
+                  })()}
                   <div className="flex justify-center mt-20">
                     <button onClick={() => {setView('feed'); setCurrentPost(null); scrollToTop();}} className="px-10 sm:px-12 py-4 sm:py-5 bg-black dark:bg-white dark:text-black text-white rounded-3xl font-black uppercase text-[11px] sm:text-[12px] md:text-sm tracking-widest hover:scale-105 transition-all shadow-2xl active:scale-95">Return to Library</button>
                   </div>
                 </div>
-                
-                <aside className="lg:w-[28rem] h-fit lg:sticky lg:top-32 hidden lg:block -mt-16 sm:-mt-24">
-                   <div className={`p-6 rounded-2xl border ${borderColor} ${isDarkMode ? 'bg-slate-900/40' : 'bg-white shadow-xl'}`}>
-                      <h4 className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-red-600 mb-8 border-b border-red-500/10 pb-4">Table of Contents</h4>
-                      <nav className="space-y-2 max-h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar">
-                        {(() => {
-                          const toc = extractToc(currentPost.content);
-                          if (toc.length === 0) {
-                            return (
-                              <p className="text-xs sm:text-sm text-slate-500 italic">No headings found</p>
-                            );
-                          }
-                          return toc.map((item) => (
-                            <a
-                              key={item.id}
-                              href={`#${item.id}`}
-                              className={`block text-xs sm:text-sm md:text-base hover:text-red-600 transition-colors ${
-                                item.level === 1 
-                                  ? 'font-bold text-sm sm:text-base md:text-lg' 
-                                  : item.level === 2 
-                                  ? 'font-semibold ml-0' 
-                                  : item.level === 3
-                                  ? 'ml-4 text-slate-600 dark:text-slate-400'
-                                  : item.level === 4
-                                  ? 'ml-8 text-slate-500 dark:text-slate-500 text-xs'
-                                  : item.level === 5
-                                  ? 'ml-12 text-slate-500 dark:text-slate-500 text-xs'
-                                  : 'ml-16 text-slate-500 dark:text-slate-500 text-xs'
-                              }`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const element = document.getElementById(item.id);
-                                if (element) {
-                                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
-                              }}
-                            >
-                              {item.text}
-                            </a>
-                          ));
-                        })()}
-                      </nav>
-                   </div>
-                </aside>
               </div>
             </div>
           )}
