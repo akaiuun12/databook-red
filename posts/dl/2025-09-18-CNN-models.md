@@ -52,7 +52,7 @@ model_lenet5.summary()
 
 LeNet-5는 Yann LeCun이 1998년에 발표한 딥러닝의 기념비적인 모델이다. 이 모델은 MNIST 문자 인식기를 위해 만들어졌으며, 합성곱 신경망(Conv)와 풀링 기법을 적용했다. 층이 올라갈수록 커널은 많아지며, 최종적으로 완전연결(FC;FullyConnected) 신경망으로 연결한다.
 
-![](/imgs/2025-09-18-21-14-46.png)
+![](/imgs/2025-09-18-lenet5-architecture.png)
 
 1998년 모델이라 현대 기준으로는 그렇게 정확도가 높은 모델이 아니며 개선점도 많다. 풀링은 AvgPool 보다는 MaxPool로 교체하고, 활성화 함수도 tanh보다는 ReLU를 사용하는 것이 정확도를 높일 수 있다. 그러나 단순한 과제에는 여전히 효과적이며 추후 나올 많은 모델의 시초로서 중요하다.
 
@@ -87,7 +87,7 @@ model.summary()
 
 AlexNet은 ILSVRC 이미지 분류 대회에서 2012년 전년 대비 급격한 개선을 이루며 우승해서 유명해진 모델이다. 기본적인 구조는 LeNet-5와 유사하지만, 훨씬 더 깊고 복잡하다.
 
-![](/imgs/2025-09-17-20-22-18.png)
+![](/imgs/2025-09-17-alexnet-architecture.png)
 
 AlexNet은 기존 모델과 달리 ReLU를 활성화 함수로 사용했다. ReLU는 이전까지 사용하던 sigmoid, tanh 활성화 함수에 비해 기울기 소실에 강건했고 덕분에 AlexNet은 보다 깊고 큰 신경망을 학습시킬 수 있었다. 또한 과대적합을 방지하기 위해 Dropout을 사용했으며, 데이터 증식(Data Augmentation)을 사용했다. 
 
@@ -125,20 +125,20 @@ model.summary()
 ```
 2014년 ILSVRC 대회에서 우승한 GoogLeNet은 Inception Network에 해당한다. GoogLeNet이라고 하면 Inception v1을 일컫는 표현이고 이 뒤로 v2, v3, v4 계속 Inception 모델이 나온다.
 
-![](/imgs/2025-09-18-20-11-49.png) 
-![](/imgs/2025-09-22-20-11-31.png)
+![](/imgs/2025-09-18-googlenet-inception-01.png) 
+![](/imgs/2025-09-22-googlenet-inception-03.png)
 
 CNN에서 1x1, 3x3, 5x5 다양한 커널을 사용할 수 있다. 무슨 커널을 사용하는게 좋을지 고민이 되는데, Inception Network는 이 커널을 전부 사용하는 것으로 해결했다. 
 
 same 패딩을 사용해서 출력값을 동일하게 하고 결과물을 채널 방향으로 깊게 연결한다. 출력값을 쌓으려면 출력값의 가로/세로를 맞춰야하기 때문에 same 패딩은 필수다. 맥스 풀링에서도 예외는 아니다.
 
-![](/imgs/2025-09-18-20-18-00.png)
+![](/imgs/2025-09-18-googlenet-inception-02.png)
 
 이런 식으로 커널을 다 때려넣다보면 당연히 계산량이 늘어나게 된다. Inception Network는 중간에 병목 레이어*Bottleneck Layer*를 넣음으로써 이 문제를 해결한다. 
 
 병목 레이어에서 1x1 커널을 사용해서 일단 작게 만든 뒤, 다시 크기를 키운다. 파라미터 수가 일반 연결보다 약 10배 줄어들지만 성능은 떨어지지 않는다고 한다.
 
-![](/imgs/2025-09-22-20-15-40.png)
+![](/imgs/2025-09-22-googlenet-bottleneck.png)
 
 Inception Network는 Inception Module이라고 부르는 이런 식의 멀티 커널 구조를 깊게 쌓아 AlexNet보다 깊지만, 파라미터 수는 더 적은 모델을 만들었다.
 
@@ -184,7 +184,7 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 ```
 VGG-16은 2014년 ILSVRC 대회에서 GoogLeNet에 이어 2위를 차지했다. VGG는 그 특유의 단순한 구조로 주목 받았는데 위쪽 코드와 아래쪽 도식에서 볼 수 있듯이 단 두 개의 커널만 사용한다. 3x3 CONV 커널과 2x2 맥스 풀링 커널이다. 다른 버전으로 VGG-19 등이 존재한다.
 
-![](/imgs/2025-09-17-20-28-03.png)
+![](/imgs/2025-09-17-vgg16-architecture.png)
 
 ### ResNet (2015)
 ```python
@@ -206,17 +206,17 @@ model.summary()
 ```
 ResNet은 2015년 ILSVRC 대회에서 우승하였다. 우승한 네트워크는 152개 층을 가진 네트워크였는데 34개, 50개, 101개 등 다른 버전도 존재한다. 사전학습된 ResNet 모델이 keras 내에 존재하며 위와 같이 불러올 수 있다.
 
-![](/imgs/2025-09-17-20-36-58.png)
+![](/imgs/2025-09-17-resnet-architecture.png)
 
 ResNet은 잔차 네트워크*Residual Network*를 말한다. 이름대로 네트워크의 핵심 역할을 하는 잔차 블록*Residual Block*이 존재한다. 잔차 블록은 메인 패스 외에도 숏컷/스킵 연결을 추가했다.
 
 만약 $z^{l+2}$가 0보다 작다면 ReLU 활성화 함수의 결과는 0이 되고 죽은 ReLU가 된다. 이를 방지하기 위해 2레이어 전의 출력값 $a^{l}$을 스킵 연결을 통해 추가한다. 
 
-![](/imgs/2025-09-17-20-56-57.png)
+![](/imgs/2025-09-17-resnet-residual-block.png)
 
 스킵 연결을 통해 온 $a^{l}$ 학습이 죽지 않게 만든다. 만약 $z^{l+2}$가 0이 된다고 해도, 모델은 $a^{l+2} = a^{l}$의 항등 함수가 된다. 이러한 특성으로 인해 목적 함수가 항등 함수에 가깝다면 ResNet의 훈련 속도는 매우 빨라지게 된다. 
 
-![](/imgs/2025-09-17-20-40-22.png)
+![](/imgs/2025-09-17-resnet-skip-connection.png)
 
 일반적인 모델 사이에 스킵 연결을 추가해 잔차 모듈로 만들면, 레이어의 개수를 늘려도 학습 오류가 늘지 않게 된다.  
 
