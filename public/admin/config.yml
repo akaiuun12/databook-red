@@ -1,0 +1,27 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/imgs"
+public_folder: "/imgs"
+
+collections:
+  - name: "posts"
+    label: "Posts"
+    folder: "posts"
+    create: true
+    # This allows saving to subfolders based on category
+    path: "{{category}}/{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["dl", "ml", "python", "sql", "stats", "web", "general"] }
+      - { label: "Tags", name: "tags", widget: "list", default: ["general"] }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Author", name: "author", widget: "string", default: "Akai Red" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Published", name: "published", widget: "boolean", default: true }
+      - { label: "Body", name: "body", widget: "markdown" }
