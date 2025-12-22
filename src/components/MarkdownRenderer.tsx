@@ -260,7 +260,7 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
       } else if (trimmedLine === '') {
         elements.push(<div key={key} className="h-1" />);
       } else {
-        elements.push(<p key={key} className="mb-1 leading-relaxed text-sm sm:text-[15px] md:text-base font-medium opacity-90">{renderLineContent(line)}</p>);
+        elements.push(<p key={key} className="mb-1 leading-relaxed text-base sm:text-lg md:text-xl font-medium opacity-90">{renderLineContent(line)}</p>);
       }
     });
 

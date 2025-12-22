@@ -119,18 +119,15 @@ const App: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isTocCollapsed, setIsTocCollapsed] = useState(false);
+  const [isTocCollapsed, setIsTocCollapsed] = useState(true);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(6);
   
   const mainContentRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   
-  // Reset TOC to open when post changes
-  useEffect(() => {
-    if (currentPost) {
-      setIsTocCollapsed(false);
-    }
-  }, [currentPost?.id]);
-
   useEffect(() => {
     const loadPosts = async () => {
       try {
@@ -264,6 +261,26 @@ const App: React.FC = () => {
     }), [posts, search, selectedCategory]
   );
 
+  // Intersection Observer for Infinite Scroll
+  useEffect(() => {
+    if (view !== 'feed') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisiblePostsCount(prev => prev + 6);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [view, filteredPosts.length]);
+
   const featuredPost = useMemo(() => filteredPosts[0] || null, [filteredPosts]);
 
   const scrollToTop = useCallback(() => {
@@ -280,37 +297,80 @@ const App: React.FC = () => {
           <div ref={progressBarRef} className="h-full bg-red-600 transition-all duration-75" style={{ width: '0%' }} />
         </div>
         
-        <header className={`h-20 ${isDarkMode ? 'bg-slate-900/80' : 'bg-white/80'} backdrop-blur-md border-b ${borderColor} flex items-center justify-between px-8 z-30`}>
-          <div className="flex items-center space-x-10">
-            <div onClick={() => {setView('feed'); setCurrentPost(null); setSelectedCategory(null); scrollToTop();}} className="flex items-center space-x-3 cursor-pointer group">
-              <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/20 active:scale-95 transition-all">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              </div>
-              <span className="font-black text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] hidden sm:block">Databook</span>
+        <header className={`h-20 flex-shrink-0 ${isDarkMode ? 'bg-slate-900/80' : 'bg-white/80'} backdrop-blur-md border-b ${borderColor} flex items-center justify-between px-4 sm:px-8 z-30`}>
+          <div onClick={() => {setView('feed'); setCurrentPost(null); setSelectedCategory(null); setVisiblePostsCount(6); scrollToTop();}} className="flex items-center space-x-3 cursor-pointer group min-w-fit sm:min-w-[140px]">
+            <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/20 active:scale-95 transition-all">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
+            <span className="font-black text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] hidden sm:block">Databook</span>
+          </div>
 
-            <nav className="flex items-center space-x-1 overflow-x-auto no-scrollbar py-2 text-[18px]">
+          <div className="flex-grow flex items-center justify-center px-4 relative">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center justify-center space-x-1 py-2 overflow-x-auto no-scrollbar">
               {categories.map(cat => (
                 <button 
                   key={cat}
-                  onClick={() => {setSelectedCategory(cat); setView('feed'); setCurrentPost(null); scrollToTop();}}
-                  className={`px-4 py-2 rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === cat ? 'bg-red-600 text-white shadow-lg' : 'text-slate-500 hover:text-red-500 hover:bg-red-500/5'}`}
+                  onClick={() => {setSelectedCategory(cat); setView('feed'); setCurrentPost(null); setVisiblePostsCount(6); scrollToTop();}}
+                  className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm md:text-base lg:text-[18px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${selectedCategory === cat ? 'text-red-600' : 'text-slate-500 hover:text-red-600'}`}
                 >
                   {cat}
                 </button>
               ))}
             </nav>
+
+            {/* Mobile Dropdown Menu Button */}
+            <div className="md:hidden flex items-center">
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-xl border ${borderColor} ${isDarkMode ? 'bg-slate-800 text-slate-100' : 'bg-slate-100 text-slate-900'} font-black text-xs uppercase tracking-widest transition-all`}
+              >
+                <span>{selectedCategory || 'CATEGORIES'}</span>
+                <svg className={`w-4 h-4 transition-transform duration-200 ${isMobileMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
+              </button>
+
+              {/* Mobile Dropdown Menu */}
+              {isMobileMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsMobileMenuOpen(false)} />
+                  <div className={`absolute top-16 left-1/2 -translate-x-1/2 w-48 z-50 rounded-2xl border ${borderColor} ${isDarkMode ? 'bg-slate-900 shadow-slate-950/50' : 'bg-white shadow-slate-200/50'} shadow-2xl p-2 animate-fade-in`}>
+                    <button 
+                      onClick={() => {setSelectedCategory(null); setView('feed'); setCurrentPost(null); setIsMobileMenuOpen(false); scrollToTop();}}
+                      className={`w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${!selectedCategory ? 'bg-red-600 text-white' : 'text-slate-500 hover:bg-red-500/5 hover:text-red-500'}`}
+                    >
+                      ALL POSTS
+                    </button>
+                    {categories.map(cat => (
+                      <button 
+                        key={cat}
+                        onClick={() => {setSelectedCategory(cat); setView('feed'); setCurrentPost(null); setVisiblePostsCount(6); setIsMobileMenuOpen(false); scrollToTop();}}
+                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === cat ? 'bg-red-600 text-white' : 'text-slate-500 hover:bg-red-500/5 hover:text-red-500'}`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="relative group hidden lg:block">
-              <input 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-                placeholder="Explore knowledge..." 
-                className={`${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200'} border ${borderColor} rounded-2xl pl-10 pr-4 py-2 text-xs sm:text-sm md:text-[13px] focus:outline-none focus:ring-2 focus:ring-red-500/50 w-48 xl:w-64 transition-all duration-200 hover:border-red-500/30 hover:shadow-lg`} 
-              />
-              <svg className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-500 group-hover:text-red-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <div className="flex items-center space-x-2 sm:space-x-4 min-w-fit sm:min-w-[140px] justify-end">
+            <div className="relative flex items-center group hidden lg:flex">
+              <div className={`overflow-hidden transition-all duration-300 flex items-center ${isSearchExpanded ? 'w-48 xl:w-64 opacity-100 mr-2' : 'w-0 opacity-0 mr-0'}`}>
+                <input 
+                  value={search} 
+                  onChange={(e) => setSearch(e.target.value)} 
+                  placeholder="Explore knowledge..." 
+                  className={`${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200'} border ${borderColor} rounded-2xl pl-4 pr-4 py-2 text-xs sm:text-sm md:text-[13px] focus:outline-none focus:ring-2 focus:ring-red-500/50 w-full transition-all duration-200 hover:border-red-500/30 hover:shadow-lg`} 
+                />
+              </div>
+              <button 
+                onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+                className={`p-2.5 rounded-xl border ${borderColor} ${isDarkMode ? 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-red-500' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-red-500'} transition-all duration-200 hover:border-red-500/30 hover:shadow-lg active:scale-95`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </button>
             </div>
 
             <button 
@@ -324,30 +384,32 @@ const App: React.FC = () => {
 
         <div ref={mainContentRef} className="flex-grow overflow-y-auto custom-scrollbar scroll-smooth">
           {view === 'feed' && (
-            <div className="max-w-6xl mx-auto px-10 py-20">
-              <div className="mb-20 animate-fade-in text-center">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black tracking-tighter mb-6 leading-none">
+            <div className="max-w-6xl mx-auto px-10 py-6">
+              <div className="mb-8 animate-fade-in text-center">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-black tracking-tighter mb-6 leading-none">
                   Databook <span className="text-red-600">Red.</span>
                 </h1>
                 <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">Statistical methodologies, data pipeline insights, and actionable analytics curated for the modern data scientist.</p>
               </div>
 
-              {featuredPost && !selectedCategory && !search && (
-                <div className="mb-20 animate-slide-up">
-                  <div className={`p-10 md:p-16 rounded-[4rem] border ${borderColor} ${isDarkMode ? 'bg-slate-900/40' : 'bg-white shadow-2xl shadow-slate-200/50'} relative overflow-hidden group`}>
+              {featuredPost && !search && (
+                <div className="mb-8 animate-slide-up hidden md:block">
+                  <div className={`p-8 md:p-10 rounded-[2rem] border ${borderColor} ${isDarkMode ? 'bg-slate-900/40' : 'bg-white shadow-2xl shadow-slate-200/50'} relative overflow-hidden group`}>
                     <div className="flex flex-col md:flex-row gap-12">
                       <div className="flex-grow">
-                        <span className="text-red-600 font-black uppercase text-[9px] sm:text-[10px] md:text-xs tracking-[0.3em] mb-4 block">Featured Publication</span>
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-6 hover:text-red-600 cursor-pointer transition-all leading-tight" onClick={() => {setCurrentPost(featuredPost); setView('post'); scrollToTop();}}>
+                        <span className="text-red-600 font-black uppercase text-[9px] sm:text-[10px] md:text-xs tracking-[0.3em] mb-4 block">
+                          {selectedCategory ? `${selectedCategory} Recent Post` : 'Recent Post'}
+                        </span>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-6 hover:text-red-600 cursor-pointer transition-all leading-tight" onClick={() => {setCurrentPost(featuredPost); setView('post'); scrollToTop();}}>
                           {featuredPost.title}
                         </h2>
-                        <div className="prose dark:prose-invert max-w-none line-clamp-4 opacity-70 mb-8 font-medium">
+                        <div className="prose dark:prose-invert max-w-none line-clamp-4 opacity-70 mb-8 font-medium text-base sm:text-lg">
                           {featuredPost.excerpt}
                         </div>
-                        <button onClick={() => {setCurrentPost(featuredPost); setView('post'); scrollToTop();}} className="px-8 sm:px-10 py-3 sm:py-4 bg-red-600 text-white rounded-2xl font-black uppercase text-[10px] sm:text-[11px] md:text-xs tracking-widest hover:bg-red-500 transition-all shadow-xl shadow-red-900/20 active:scale-95">Read Full Entry</button>
+                        <button onClick={() => {setCurrentPost(featuredPost); setView('post'); scrollToTop();}} className="px-8 sm:px-10 py-3 sm:py-4 bg-red-600 text-white rounded-2xl font-black uppercase text-[10px] sm:text-[11px] md:text-xs tracking-widest hover:bg-red-500 transition-all shadow-xl shadow-red-900/20 active:scale-95">Read More</button>
                       </div>
                       <div className="md:w-1/3 flex-shrink-0">
-                        <img src={featuredPost.coverImage} className="w-full h-80 object-cover rounded-[3rem] border border-red-500/10 shadow-2xl transition-transform duration-700 group-hover:scale-105" />
+                        <img src={featuredPost.coverImage} className="w-full h-64 object-cover rounded-[2rem] border border-red-500/10 shadow-2xl transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                       </div>
                     </div>
                   </div>
@@ -355,22 +417,38 @@ const App: React.FC = () => {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {(featuredPost && !selectedCategory && !search ? filteredPosts.slice(1) : filteredPosts).map(p => (
-                  <article key={p.id} onClick={() => {setCurrentPost(p); setView('post'); scrollToTop();}} className={`group flex flex-col ${isDarkMode ? 'bg-slate-900/40' : 'bg-white shadow-xl'} border ${borderColor} rounded-[2.5rem] overflow-hidden hover:border-red-500/30 transition-all duration-500 cursor-pointer h-full`}>
-                    <div className="aspect-[16/10] relative overflow-hidden"><img src={p.coverImage} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-80" /></div>
-                    <div className="p-8 flex flex-col flex-grow">
-                      <div className="flex space-x-2 mb-4">
-                        <span className="text-[8px] sm:text-[9px] md:text-xs font-black uppercase tracking-widest text-red-600 bg-red-600/10 px-3 py-1 rounded-lg">{p.category}</span>
+                {filteredPosts.slice(0, visiblePostsCount).map((p, index) => {
+                  const isFirstPostInGrid = index === 0;
+                  const isShowingFeatured = !search;
+                  
+                  return (
+                    <article 
+                      key={p.id} 
+                      onClick={() => {setCurrentPost(p); setView('post'); scrollToTop();}} 
+                      className={`group flex flex-col ${isDarkMode ? 'bg-slate-900/40' : 'bg-white shadow-xl'} border ${borderColor} rounded-[2rem] overflow-hidden hover:border-red-500/30 transition-all duration-500 cursor-pointer h-full ${isFirstPostInGrid && isShowingFeatured ? 'md:hidden' : ''}`}
+                    >
+                      <div className="aspect-[16/10] relative overflow-hidden"><img src={p.coverImage} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-80" loading="lazy" /></div>
+                      <div className="p-8 flex flex-col flex-grow">
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="text-[10px] sm:text-[11px] md:text-sm font-black uppercase tracking-widest text-red-600 bg-red-600/10 px-3 py-1 rounded-lg">{p.category}</span>
+                          <div className="text-[10px] sm:text-[11px] md:text-sm font-black uppercase text-slate-500 tracking-widest flex flex-col items-end opacity-70 group-hover:opacity-100 transition-opacity">
+                            <span>{p.publishedAt}</span>
+                          </div>
+                        </div>
+                        <div className="min-h-0 sm:min-h-[4rem] mb-2 sm:mb-4">
+                          <h3 className="text-lg sm:text-lg md:text-xl font-bold group-hover:text-red-600 transition-colors leading-tight line-clamp-2">{p.title}</h3>
+                        </div>
+                        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg line-clamp-3 leading-relaxed flex-grow">{p.excerpt}</p>
                       </div>
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 group-hover:text-red-600 transition-colors leading-tight">{p.title}</h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mb-8 line-clamp-3 leading-relaxed flex-grow">{p.excerpt}</p>
-                      <div className={`pt-6 border-t ${borderColor} flex justify-between items-center text-[8px] sm:text-[9px] md:text-xs font-black uppercase text-slate-500 tracking-widest`}>
-                        <span>{p.publishedAt}</span>
-                        <span>{p.readingTime}</span>
-                      </div>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  );
+                })}
+              </div>
+              
+              <div ref={loadMoreRef} className="h-20 flex items-center justify-center mt-10">
+                {visiblePostsCount < filteredPosts.length && (
+                  <div className="w-8 h-8 border-4 border-red-600/20 border-t-red-600 rounded-full animate-spin" />
+                )}
               </div>
               
               {filteredPosts.length === 0 && (
@@ -396,10 +474,10 @@ const App: React.FC = () => {
                     </h1>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                       <img src={currentPost.author.avatar} className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 ${isDarkMode ? 'border-red-600/30' : 'border-red-600/20'} shadow-2xl`} />
-                      <div className="text-center sm:text-left">
+                        <div className="text-center sm:text-left">
                         <p className="text-xs sm:text-sm md:text-base font-bold">{currentPost.author.name}</p>
                         <p className={`text-[9px] sm:text-[10px] md:text-xs ${isDarkMode ? 'text-red-100' : 'text-red-700'} uppercase font-black tracking-widest opacity-90`}>
-                          {currentPost.publishedAt} • {currentPost.readingTime}
+                          {currentPost.publishedAt}
                         </p>
                       </div>
                     </div>
@@ -407,7 +485,7 @@ const App: React.FC = () => {
                 </div>
               </div>
               
-              <div className="max-w-6xl mx-auto px-6 md:px-10 pb-32 pt-12 md:pt-16">
+              <div className="max-w-6xl mx-auto px-6 md:px-10 pb-32 pt-16 md:pt-24">
                 <div className="flex-grow">
                   {(() => {
                     const toc = extractToc(currentPost.content);
@@ -476,7 +554,7 @@ const App: React.FC = () => {
                     );
                   })()}
                   <div className="flex justify-center mt-20">
-                    <button onClick={() => {setView('feed'); setCurrentPost(null); scrollToTop();}} className="px-10 sm:px-12 py-4 sm:py-5 bg-black dark:bg-white dark:text-black text-white rounded-3xl font-black uppercase text-[11px] sm:text-[12px] md:text-sm tracking-widest hover:scale-105 transition-all shadow-2xl active:scale-95">Return to Library</button>
+                    <button onClick={() => {setView('feed'); setCurrentPost(null); scrollToTop();}} className="px-10 sm:px-12 py-4 sm:py-5 bg-black dark:bg-white dark:text-black text-white rounded-3xl font-black uppercase text-[11px] sm:text-[12px] md:text-sm tracking-widest hover:scale-105 transition-all shadow-2xl active:scale-95">Return to Home</button>
                   </div>
                 </div>
               </div>
