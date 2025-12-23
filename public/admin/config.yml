@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: akaired/red-databook
   branch: main
+  base_url: https://red-databook.netlify.app
+  auth_endpoint: /api/auth
 
 media_folder: "public/imgs"
 public_folder: "/imgs"
